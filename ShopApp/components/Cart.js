@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, Image, FlatList, TouchableOpacity, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const truncateText = (text, maxLength) => {
+  if (text.length <= maxLength) {
+    return text;
+  }
+  return text.substr(0, maxLength) + '...';
+};
+
 const Cart = ({ navigation }) => {
   const [cartItems, setCartItems] = useState([]);
 
@@ -15,8 +22,9 @@ const Cart = ({ navigation }) => {
       }
     };
 
-    fetchCartItems();
-  }, []);
+    const focusListener = navigation.addListener('focus', fetchCartItems);
+    return () => focusListener();
+  }, [navigation]);
 
   const removeFromCart = async (productId) => {
     try {
@@ -31,7 +39,7 @@ const Cart = ({ navigation }) => {
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => total + item.price, 0);
   };
-  const [lineLength, setLineLength] = useState(100);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -40,19 +48,19 @@ const Cart = ({ navigation }) => {
       </View>
       <Text style={styles.checkoutTitle}>CHECKOUT</Text>
       <View style={styles.lineContainer}>
-        <View style={[styles.line, { width: lineLength }]} />
+        <View style={[styles.line, { width: 100 }]} />
         <View style={styles.diamond} />
-        <View style={[styles.line, { width: lineLength }]} />
+        <View style={[styles.line, { width: 100 }]} />
       </View>
       <FlatList
         data={cartItems}
         keyExtractor={(item, index) => `${item.id}-${index}`} // Ensure unique keys
         renderItem={({ item }) => (
           <View style={styles.cartItemContainer}>
-            <Image source={item.image} style={styles.cartItemImage} />
+            <Image source={{ uri: item.image }} style={styles.cartItemImage} />
             <View style={styles.cartItemDetails}>
-              <Text style={styles.cartItemName}>{item.name.toUpperCase()}</Text>
-              <Text style={styles.cartItemDescription}>{item.description}</Text>
+              <Text style={styles.cartItemName}>{item.title ? item.title.toUpperCase() : 'UNKNOWN ITEM'}</Text>
+              <Text style={styles.cartItemDescription}>{truncateText(item.description, 40)}</Text>
               <Text style={styles.cartItemPrice}>${item.price}</Text>
             </View>
             <TouchableOpacity onPress={() => removeFromCart(item.id)} style={styles.removeButton}>
@@ -125,24 +133,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
-    marginLeft:90,
-    
+    marginLeft: 90,
   },
   line: {
-   
     height: 1,
     backgroundColor: 'black',
-    width:1,
-   
   },
   diamond: {
     width: 10,
     height: 10,
-    backgroundColor: 'white', 
-    borderColor: 'black', 
-    borderWidth: 1, 
-    transform: [{ rotate: '45deg' }], 
-   
+    backgroundColor: 'white',
+    borderColor: 'black',
+    borderWidth: 1,
+    transform: [{ rotate: '45deg' }],
   },
   cartItemName: {
     fontSize: 16,
@@ -191,7 +194,6 @@ const styles = StyleSheet.create({
     padding: 15,
     marginTop: 10,
     flexDirection: 'row',
-    
     justifyContent: 'center',
     width: '100%',
   },

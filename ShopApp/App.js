@@ -10,6 +10,7 @@ import DrawerScreen from './components/DrawerScreen';
 import BlogScreen from './components/BlogScreen';
 import JewelleryScreen from './components/JewelleryScreen';
 import ElectronicScreen from './components/ElectronicScreen';
+import ProductsProvider from './components/ProductsContext'; // Import the ProductsProvider
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -24,21 +25,23 @@ const HomeStack = () => (
 
 const App = () => {
   return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        <Drawer.Navigator
-          initialRouteName="Store"
-          drawerContent={(props) => <DrawerScreen {...props} />}
-        >
-          <Drawer.Screen name="Store" component={HomeStack} options={{ headerShown: false }} />
-          <Drawer.Screen name="Location" component={Cart} options={{ headerShown: false }} />
-          <Drawer.Screen name="Clothing" component={ProductDetailScreen} options={{ headerShown: false }} />
-          <Drawer.Screen name="BlogScreen" component={BlogScreen} options={{ headerShown: false }} />
-          <Drawer.Screen name="JewelleryScreen" component={JewelleryScreen} options={{ headerShown: false }} />
-          <Drawer.Screen name="ElectronicScreen" component={ElectronicScreen} options={{ headerShown: false }} />
-        </Drawer.Navigator>
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <ProductsProvider>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <Drawer.Navigator
+            initialRouteName="Store"
+            drawerContent={(props) => <DrawerScreen {...props} />}
+          >
+            <Drawer.Screen name="Store" component={HomeStack} options={{ headerShown: false }} />
+            <Drawer.Screen name="Location" component={Cart} options={{ headerShown: false }} />
+            <Drawer.Screen name="Clothing" component={ProductDetailScreen} options={{ headerShown: false }} />
+            <Drawer.Screen name="BlogScreen" component={BlogScreen} options={{ headerShown: false }} />
+            <Drawer.Screen name="JewelleryScreen" component={JewelleryScreen} options={{ headerShown: false }} />
+            <Drawer.Screen name="ElectronicScreen" component={ElectronicScreen} options={{ headerShown: false }} />
+          </Drawer.Navigator>
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </ProductsProvider>
   );
 };
 

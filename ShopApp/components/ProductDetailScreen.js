@@ -2,58 +2,55 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
 import Header from './Header';
 
-const ProductDetailScreen = ({ route, navigation }) => {
-  const product = route?.params?.product ?? {
-    name: 'LAMEREI',
-    description: 'Recycle Boucle Knit Cardigan Pink',
-    price: 120,
-    image: require('../assets/dress4.png'),
-  };
+const ProductDetailScreen = ({ route }) => {
+  const { product = {} } = route.params || {};
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Header navigation={navigation} showOurStory={false} />
-        <Image source={product.image} style={styles.productImage} />
+        <Header showOurStory={false} />
+        <Image source={{ uri: product.image }} style={styles.productImage} />
         <View style={styles.productDetails}>
           <View style={styles.productHeader}>
-            <Text style={styles.lamereiText}>{product.name}</Text>
+            <Text style={styles.productName}>{product.title}</Text>
             <Image source={require('../assets/Export.png')} style={styles.exportIcon} />
           </View>
           <Text style={styles.productDescription}>{product.description}</Text>
           <Text style={styles.productPrice}>${product.price}</Text>
-          <Text style={styles.materialsTitle}>MATERIALS</Text>
-          <Text style={styles.materialsText}>
-            We work with monitoring programmes to ensure compliance with safety, health and quality standards for our products.
-          </Text>
+
+          <View style={styles.careInstructions}>
+            <Text style={styles.sectionTitle}>Care Instructions</Text>
+            <View style={styles.careInstruction}>
+              <Image source={require('../assets/DoNotBleach.png')} style={styles.careIcon} />
+              <Text style={styles.careText}>Do not use bleach</Text>
+            </View>
+            <View style={styles.careInstruction}>
+              <Image source={require('../assets/DoNotTumbleDry.png')} style={styles.careIcon} />
+              <Text style={styles.careText}>Do not tumble dry</Text>
+            </View>
+            <View style={styles.careInstruction}>
+              <Image source={require('../assets/DoNotWash.png')} style={styles.careIcon} />
+              <Text style={styles.careText}>Dry clean with tetrachloroethylene</Text>
+            </View>
+            <View style={styles.careInstruction}>
+              <Image source={require('../assets/Iron.png')} style={styles.careIcon} />
+              <Text style={styles.careText}>Iron at a maximum of 110°C/230°F</Text>
+            </View>
+          </View>
+
+          <View style={styles.shippingContainer}>
+            <Text style={styles.sectionTitle}>Shipping Information</Text>
+            <View style={styles.shippingInfoContainer}>
+              <View style={styles.shippingInfo}>
+                <Image source={require('../assets/Shipping.png')} style={styles.shippingIcon} />
+                <Text style={styles.shippingText}>Free Flat Rate Shipping</Text>
+              </View>
+              <Image source={require('../assets/Up.png')} style={styles.upIcon} />
+            </View>
+          </View>
+
+          <Text style={styles.estimatedDelivery}>Estimated to be delivered on 09/11/2021 - 12/11/2021.</Text>
         </View>
-        <View style={styles.careInstructions}>
-          <View style={styles.careInstruction}>
-            <Image source={require('../assets/DoNotBleach.png')} style={styles.careIcon} />
-            <Text style={styles.careText}>Do not use bleach</Text>
-          </View>
-          <View style={styles.careInstruction}>
-            <Image source={require('../assets/DoNotTumbleDry.png')} style={styles.careIcon} />
-            <Text style={styles.careText}>Do not tumble dry</Text>
-          </View>
-          <View style={styles.careInstruction}>
-            <Image source={require('../assets/DoNotWash.png')} style={styles.careIcon} />
-            <Text style={styles.careText}>Dry clean with tetrachloroethylene</Text>
-          </View>
-          <View style={styles.careInstruction}>
-            <Image source={require('../assets/Iron.png')} style={styles.careIcon} />
-            <Text style={styles.careText}>Iron at a maximum of 110°C/230°F</Text>
-          </View>
-          <View style={styles.separator} />
-        </View>
-        <View style={styles.shippingContainer}>
-          <View style={styles.shippingInfo}>
-            <Image source={require('../assets/Shipping.png')} style={styles.shippingIcon} />
-            <Text style={styles.shippingText}>Free Flat Rate Shipping</Text>
-          </View>
-          <Image source={require('../assets/Up.png')} style={styles.upIcon} />
-        </View>
-        <Text style={styles.estimatedDelivery}>Estimated to be delivered on 09/11/2021 - 12/11/2021.</Text>
       </ScrollView>
       <View style={styles.addToBasketContainer}>
         <TouchableOpacity style={styles.addToBasketButton}>
@@ -91,8 +88,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 8,
   },
-  lamereiText: {
+  productName: {
     fontSize: 20,
+    marginBottom: 8,
   },
   exportIcon: {
     width: 24,
@@ -107,23 +105,18 @@ const styles = StyleSheet.create({
     color: 'orange',
     marginBottom: 20,
   },
-  materialsTitle: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  materialsText: {
-    fontSize: 14,
-    color: '#333',
-    marginBottom: 24,
-  },
   careInstructions: {
-    paddingHorizontal: 16,
-    marginBottom: 24,
+    marginTop: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   careInstruction: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 8,
   },
   careIcon: {
     width: 24,
@@ -134,21 +127,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
   },
-  separator: {
-    height: 1,
-    backgroundColor: '#ccc',
-    marginVertical: 16,
-  },
   shippingContainer: {
+    marginTop: 20,
+  },
+  shippingInfoContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    marginBottom: 16,
   },
   shippingInfo: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 8,
   },
   shippingIcon: {
     width: 24,
@@ -166,8 +156,7 @@ const styles = StyleSheet.create({
   estimatedDelivery: {
     fontSize: 14,
     color: '#333',
-    paddingHorizontal: 16,
-    marginBottom: 16,
+    marginTop: 2,
   },
   addToBasketContainer: {
     flexDirection: 'row',

@@ -1,22 +1,24 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, FlatList, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import Header from './Header';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { ProductsContext } from './ProductsContext'; // Import the ProductsContext
 
-const products = [
-  { id: '1', name: 'Office Wear', description: 'reversible angora cardigan', price: 120, image: require('../assets/dress1.png') },
-  { id: '2', name: 'Black', description: 'reversible angora cardigan', price: 120, image: require('../assets/dress2.png') },
-  { id: '3', name: 'Church Wear', description: 'reversible angora cardigan', price: 120, image: require('../assets/dress3.png') },
-  { id: '4', name: 'Lamerei', description: 'reversible angora cardigan', price: 120, image: require('../assets/dress4.png') },
-  { id: '5', name: '21WN', description: 'reversible angora cardigan', price: 120, image: require('../assets/dress5.png') },
-  { id: '6', name: 'Lopo', description: 'reversible angora cardigan', price: 120, image: require('../assets/dress6.png') },
-  { id: '7', name: '21WN', description: 'reversible angora cardigan', price: 120, image: require('../assets/dress7.png') },
-  { id: '8', name: 'Lame', description: 'reversible angora cardigan', price: 120, image: require('../assets/dress3.png') },
-];
+const truncateText = (text, maxLength) => {
+  if (text.length <= maxLength) {
+    return text;
+  }
+  return text.substr(0, maxLength) + '...';
+};
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const { products } = useContext(ProductsContext); // Use the products from context
+
+  const navigateToProductDetail = (product) => {
+    navigation.navigate('ProductDetail', { product });
+  };
 
   const addToCart = async (product) => {
     try {
@@ -31,17 +33,17 @@ const HomeScreen = () => {
   };
 
   const renderProduct = ({ item }) => (
-    <View style={styles.productContainer}>
+    <TouchableOpacity style={styles.productContainer} onPress={() => navigateToProductDetail(item)}>
       <View style={styles.imageContainer}>
-        <Image source={item.image} style={styles.productImage} />
+        <Image source={{ uri: item.image }} style={styles.productImage} />
         <TouchableOpacity style={styles.addToCartButton} onPress={() => addToCart(item)}>
           <Image source={require('../assets/add.png')} style={styles.addToCartIcon} />
         </TouchableOpacity>
       </View>
-      <Text style={styles.productName}>{item.name}</Text>
-      <Text style={styles.productDescription}>{item.description}</Text>
+      <Text style={styles.productName}>{item.title}</Text>
+      <Text style={styles.productDescription}>{truncateText(item.description, 40)}</Text>
       <Text style={styles.productPrice}>${item.price}</Text>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -50,7 +52,7 @@ const HomeScreen = () => {
         <Header navigation={navigation} />
         <FlatList
           data={products}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id.toString()}
           renderItem={renderProduct}
           numColumns={2}
           columnWrapperStyle={styles.row}
@@ -70,7 +72,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   row: {
-    justifyContent: 'space-around', 
+    justifyContent: 'space-around',
     marginBottom: 10,
   },
   productContainer: {
@@ -78,7 +80,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     margin: 5,
-    padding: 10, 
+    padding: 10,
   },
   imageContainer: {
     position: 'relative',
@@ -92,20 +94,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 10,
     textAlign: 'left',
-    alignSelf: 'flex-start'
+    alignSelf: 'flex-start',
   },
   productDescription: {
     fontSize: 13,
     marginTop: 5,
     color: '#888',
-    alignSelf: 'flex-start'
+    alignSelf: 'flex-start',
   },
   productPrice: {
     fontSize: 14,
     color: 'orange',
     marginTop: 5,
     textAlign: 'center',
-    alignSelf: 'flex-start'
+    alignSelf: 'flex-start',
   },
   addToCartButton: {
     position: 'absolute',
