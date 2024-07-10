@@ -157,6 +157,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
     marginTop: 2,
+    marginBottom: 20,
   },
   addToBasketContainer: {
     flexDirection: 'row',
